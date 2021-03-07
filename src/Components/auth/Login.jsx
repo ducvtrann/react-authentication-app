@@ -11,7 +11,7 @@ import {
   Box,
   makeStyles,
 } from '@material-ui/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,32 +33,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Registration = ({ handleSuccessfulAuth }) => {
+const Login = ({ handleSuccessfulAuth }) => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
   const handleSubmit = (e) => {
     axios
       .post(
-        'http://localhost:3001/registrations',
+        'http://localhost:3001/sessions',
         {
           user: {
             email,
             password,
-            passwordConfirmation,
           },
         },
         { withCredentials: true }
       )
       .then((response) => {
-        if (response.data.status === 'created') {
+        if (response.data.logged_in) {
           handleSuccessfulAuth(response.data.user);
         }
       })
       .catch((error) => {
-        console.log('registration error', error);
+        console.log('login error', error);
       });
     e.preventDefault();
   };
@@ -67,10 +65,10 @@ const Registration = ({ handleSuccessfulAuth }) => {
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <AccountCircleIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Login
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
@@ -96,18 +94,6 @@ const Registration = ({ handleSuccessfulAuth }) => {
             autoFocus
             onChange={(e) => setPassword(e.target.value)}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="passwordConfirmation"
-            type="password"
-            label="Password Confirmation"
-            autoComplete="current-password"
-            autoFocus
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
-          />
           <Button
             type="submit"
             fullWidth
@@ -115,12 +101,12 @@ const Registration = ({ handleSuccessfulAuth }) => {
             color="primary"
             className={classes.submit}
           >
-            Register
+            Login
           </Button>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
-                {'Already have an account? Sign in now.'}
+                {"Don't have an account? Sign in now."}
               </Link>
             </Grid>
           </Grid>
@@ -140,4 +126,4 @@ const Registration = ({ handleSuccessfulAuth }) => {
   );
 };
 
-export default Registration;
+export default Login;
